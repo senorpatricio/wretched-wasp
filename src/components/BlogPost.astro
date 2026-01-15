@@ -1,6 +1,7 @@
 ---
-const { title, url } = Astro.props;
+const { title, slug } = Astro.props;
+console.log('props', Astro.props)
 ---
 
 
-<li><a href={url}>{title}</a></li>
+<li><a href={`/blog/${slug}`}>{title}</a></li>

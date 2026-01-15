@@ -1,0 +1,47 @@
+---
+// import { type CollectionEntry, getCollection } from "astro:content";
+import CarPost from "../../layouts/CarPost.astro";
+import { GraphQLClient } from 'graphql-request';
+
+
+type CarPage = {
+	car: {
+		title: string;
+		slugTitle: string;
+		pubDate: Date;
+		description: string;
+	};
+};
+
+export async function getStaticPaths() {
+
+	const client = new GraphQLClient(import.meta.env.HYGRAPH_ENDPOINT);
+
+	const carsQuery = `query MyQuery {
+		cars {
+			slugTitle
+			title
+			pubDate
+			description
+		}
+	}`;
+
+	const cars = await client.request(carsQuery);
+
+	return cars.cars.map( car => ({
+		params: { 
+			slugTitle: car.slugTitle 
+		},
+		props: { car }
+	})  )
+	
+}
+
+const { car } = Astro.props;
+
+---
+
+<h1>SLUG PAGE! {car.title}</h1>
+
+<CarPost {...car}>
+</CarPost>

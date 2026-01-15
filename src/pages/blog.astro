@@ -3,7 +3,32 @@ import BlogPost from "../components/BlogPost.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 const allPosts = Object.values(import.meta.glob('./posts/*.md', { eager: true }));
 const pageTitle = "The Quirky Car Blog";
+
+interface Post {
+    title: string;
+}
+
+const query = {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    query: `
+      {
+        cars {
+          title,
+          slugTitle
+        }
+      }`,
+  }),
+};
+
+const response = await fetch(import.meta.env.HYGRAPH_ENDPOINT, query);
+const json = await response.json();
+const posts: Post[] = json.data.cars;
+
+console.log('cars: ', posts)
 ---
+
 
 <BaseLayout pageTitle={pageTitle}>
     <p>
@@ -12,6 +37,6 @@ const pageTitle = "The Quirky Car Blog";
     </p>
 
     <ul>
-        {allPosts.map((post: any) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
+        {posts.map((post: any) => <BlogPost slug={post.slugTitle} title={post.title}/>)}
     </ul>
 </BaseLayout>
