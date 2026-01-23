@@ -1,23 +1,24 @@
 ---
 // import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
 // import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 // import { getCollection } from 'astro:content';
-import FormattedDate from '../../components/FormattedDate.astro';
+import FormattedDate from "../../components/FormattedDate.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 interface Car {
-  title: string;
-  slugTitle: string;
-  carMainImage: any;
-  pubDate: any;
+	title: string;
+	slugTitle: string;
+	carMainImage: any;
+	pubDate: any;
 }
 
 const query = {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    query: `
+	method: "POST",
+	headers: { "Content-Type": "application/json" },
+	body: JSON.stringify({
+		query: `
       {
         cars {
           title,
@@ -25,117 +26,37 @@ const query = {
 		  pubDate        
 		}
       }`,
-  }),
+	}),
 };
 
 const response = await fetch(import.meta.env.HYGRAPH_ENDPOINT, query);
 const json = await response.json();
-console.log('cars', json);
+// console.log("cars", json);
 const cars: Car[] = json.data.cars;
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<!-- <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} /> -->
-		<style>
-			main {
-				width: 960px;
+<style>
+	li {
+		list-style: none;
+	}
+</style>
+
+<BaseLayout pageTitle={`The Quirky Lego Car Blog`}>
+	<section>
+		<ul>
+			{
+				cars.map((car) => (
+					<li>
+						<a href={`/blog/${car.slugTitle}/`}>
+							{/* <img width={720} height={360} src={car.carMainImage[0].url} alt="" /> */}
+							<h4 class="title">{car.title}</h4>
+							{/* <p class="date">
+											<span>{car.pubDate}</span>
+										</p> */}
+						</a>
+					</li>
+				))
 			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						cars.map((car) => (
-							<li>
-								<a href={`/cars/${car.slugTitle}/`}>
-									{/* <img width={720} height={360} src={car.carMainImage[0].url} alt="" /> */}
-									<h4 class="title">{car.title}</h4>
-									{/* <p class="date">
-										<span>{car.pubDate}</span>
-									</p> */}
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
-<!-- carMainImage {
-		 	id
-			fileName
-			height
-			width 
-			url
-		  } -->
+		</ul>
+	</section>
+</BaseLayout>

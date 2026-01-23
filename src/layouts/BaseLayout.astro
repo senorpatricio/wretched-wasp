@@ -11,6 +11,12 @@ const { pageTitle } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
+    <style>
+      img {
+        max-width: fit-content;
+        height: auto;
+      }
+    </style>
   </head>
   <body>
     <Header />

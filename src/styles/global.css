@@ -20,6 +20,11 @@ h1 {
   font-size: 2.5rem;
 }
 
+article img { 
+  height: auto;
+  max-width: 100%;
+  padding: 1rem;
+}
 /* nav styles */
 .menu {
   background-color: #0d0950;

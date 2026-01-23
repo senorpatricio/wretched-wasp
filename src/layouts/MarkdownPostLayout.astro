@@ -1,15 +1,42 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
-const { frontmatter } = Astro.props;
+import { Markdown } from "astro-remote";
+
+const frontmatter = Astro.props;
+// const { Content } = await frontmatter.car.article.markdown.render()
 ---
 
-<BaseLayout pageTitle={frontmatter.title}>
-    <p>{frontmatter.pubDate.toString().slice(0, 10)}</p>
-    <p><em>{frontmatter.description}</em></p>
-    <p>Written by: {frontmatter.author}</p>
-    <img src={frontmatter.image.url} width="300" alt={frontmatter.image.alt} />
+<style>
+  .car-main-image {
+    max-width: 100%;
+    height: auto;
+    padding: 1rem;
+  }
+</style>
 
-    <div class="tags">
+<BaseLayout pageTitle={frontmatter.car.title}>
+  <!-- <p>{frontmatter.car.pubDate.toString().slice(0, 10)}</p> -->
+  {
+    frontmatter.car.carMainImage && frontmatter.car.carMainImage.url ? (
+      <img
+        src={frontmatter.car.carMainImage.url}
+        alt={frontmatter.car.carMainImage.alt}
+        class="car-main-image"
+      />
+    ) : null
+  }
+  <p><em>{frontmatter.car.description}</em></p>
+  <hr />
+  <!-- <p>Written by: {frontmatter.author}</p> -->
+  <article>
+    {
+      frontmatter.car.article && frontmatter.car.article.markdown ? (
+        <Markdown content={frontmatter.car.article.markdown} />
+      ) : null
+    }
+  </article>
+  <!-- <Content /> -->
+  <!-- <div class="tags">
         {
             frontmatter.tags.map((tag: string) => (
                 <p class="tag">
@@ -17,14 +44,14 @@ const { frontmatter } = Astro.props;
                 </p>
             ))
         }
-    </div>
+    </div> -->
 
-    <slot />
+  <slot />
 </BaseLayout>
 
 <style>
   a {
-    color: #00539F;
+    color: #00539f;
   }
 
   .tags {
@@ -32,12 +59,13 @@ const { frontmatter } = Astro.props;
     flex-wrap: wrap;
   }
 
+
   .tag {
     margin: 0.25em;
     border: dotted 1px #a1a1a1;
-    border-radius: .5em;
-    padding: .5em 1em;
+    border-radius: 0.5em;
+    padding: 0.5em 1em;
     font-size: 1.15em;
-    background-color: #F8FCFD;
+    background-color: #f8fcfd;
   }
 </style>
